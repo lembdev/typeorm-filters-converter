@@ -1,0 +1,83 @@
+name: Release
+
+'on':
+  push:
+    branches:
+      - master
+      - renovate/**
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+      - name: Ensure dependencies are compatible with the version of node
+        run: npx ls-engines
+      - name: Linting
+        run: npm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 16
+          - 18
+          - 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+      - name: Testing
+        run: npm run test
+
+  release:
+    if: github.ref == 'refs/heads/main'
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+      - name: Build
+        run: npm run build
+      - name: Release
+        run: npx semantic-release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

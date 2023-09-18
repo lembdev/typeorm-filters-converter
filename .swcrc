@@ -1,0 +1,20 @@
+{
+  "jsc": {
+    "target": "es2020",
+    "parser": {
+      "syntax": "typescript",
+      "tsx": false,
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "transform": {
+      "useDefineForClassFields": false,
+      "decoratorMetadata": true
+    },
+    "keepClassNames": false
+  },
+  "module": {
+    "type": "commonjs"
+  },
+  "sourceMaps": true
+}
