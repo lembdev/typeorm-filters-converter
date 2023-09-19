@@ -1,5 +1,7 @@
 # `@lembdev/typeorm-filters-converter`
 
+[![Release](https://github.com/lembdev/typeorm-filters-converter/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/lembdev/typeorm-filters-converter/actions/workflows/release.yml)
+
 This lib is intended to be used for converting filters in the context of SQL-based debate repositories (e.g. TypeORM ones). Particularly, it helps in the creation of filter conditions for using with repository queries and query builders in TypeORM. It also provides ways to handle global filters which are applied to all other filters.
 
 ## Table of Contents
